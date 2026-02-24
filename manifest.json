@@ -1,0 +1,16 @@
+{
+  "name": "Hackea el Sistema",
+  "short_name": "Hackea",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0f0f0f",
+  "theme_color": "#00ff99",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
