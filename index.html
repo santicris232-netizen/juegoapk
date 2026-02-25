@@ -4,139 +4,163 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#00ff99">
-
 <title>Hackea el Sistema</title>
+
+<!-- Icono integrado en base64 -->
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAB...">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <style>
 body{
-    background: #0f0f0f;
-    color: #00ff99;
-    font-family: monospace;
-    text-align: center;
-}
-.container{
-    margin-top: 40px;
-}
-input{
-    padding:10px;
-    font-size:18px;
+    background:#0f0f0f;
+    color:#00ff99;
+    font-family:monospace;
     text-align:center;
+    margin:0;
 }
+
+/* Splash */
+#splash{
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:#000;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+
+.container{
+  padding:20px;
+  margin-top:30px;
+}
+
+input{
+  padding:10px;
+  font-size:18px;
+  text-align:center;
+}
+
 button{
-    padding:10px 20px;
-    font-size:16px;
-    cursor:pointer;
-    margin:5px;
-    background:#00ff99;
-    border:none;
+  padding:10px 20px;
+  margin:5px;
+  background:#00ff99;
+  border:none;
+  cursor:pointer;
 }
+
 .log{
-    margin-top:20px;
-    height:200px;
-    overflow:auto;
-    border:1px solid #00ff99;
-    padding:10px;
+  margin-top:20px;
+  height:200px;
+  overflow:auto;
+  border:1px solid #00ff99;
+  padding:10px;
 }
 </style>
 </head>
 
 <body>
 
+<div id="splash">
+  <h1>💻 Hackea el Sistema</h1>
+  <p>Iniciando sistema...</p>
+</div>
+
 <div class="container">
-    <h1>💻 Hackea el Sistema</h1>
-    <p>Descifra el código antes de que el sistema se bloquee.</p>
+  <h1>💻 Hackea el Sistema</h1>
+  <p>Descifra el código antes de que el sistema se bloquee.</p>
 
-    <input type="text" id="intento" placeholder="Ingresa código">
-    <button onclick="verificar()">Hackear</button>
-    <button onclick="reiniciar()">Reiniciar</button>
+  <input type="text" id="intento" placeholder="Ingresa código">
+  <button onclick="verificar()">Hackear</button>
+  <button onclick="reiniciar()">Reiniciar</button>
 
-    <p>Intentos restantes: <span id="intentos"></span></p>
+  <p>Intentos restantes: <span id="intentos"></span></p>
 
-    <div class="log" id="log"></div>
+  <div class="log" id="log"></div>
 </div>
 
 <script>
-
 let nivel = 1;
 let codigo = "";
 let intentosMax = 8;
 let intentosRestantes = intentosMax;
 
 function generarCodigo(){
-    codigo = "";
-    let longitud = nivel + 2;
+  codigo = "";
+  let longitud = nivel + 2;
 
-    while(codigo.length < longitud){
-        let numero = Math.floor(Math.random()*10);
-        if(!codigo.includes(numero)){
-            codigo += numero;
-        }
+  while(codigo.length < longitud){
+    let numero = Math.floor(Math.random()*10);
+    if(!codigo.includes(numero)){
+      codigo += numero;
     }
+  }
 }
 
 function iniciar(){
-    generarCodigo();
-    intentosRestantes = intentosMax;
-    document.getElementById("intentos").innerText = intentosRestantes;
-    document.getElementById("log").innerHTML = "";
+  generarCodigo();
+  intentosRestantes = intentosMax;
+  document.getElementById("intentos").innerText = intentosRestantes;
+  document.getElementById("log").innerHTML = "";
 }
 
 function verificar(){
-    let intento = document.getElementById("intento").value;
+  let intento = document.getElementById("intento").value;
 
-    if(intento.length !== codigo.length){
-        alert("Longitud incorrecta. Debe tener " + codigo.length + " dígitos.");
-        return;
+  if(intento.length !== codigo.length){
+    alert("Debe tener " + codigo.length + " dígitos.");
+    return;
+  }
+
+  let correctos = 0;
+  let parciales = 0;
+
+  for(let i=0;i<codigo.length;i++){
+    if(intento[i] === codigo[i]){
+      correctos++;
+    }else if(codigo.includes(intento[i])){
+      parciales++;
     }
+  }
 
-    let correctos = 0;
-    let parciales = 0;
+  intentosRestantes--;
+  document.getElementById("intentos").innerText = intentosRestantes;
 
-    for(let i=0;i<codigo.length;i++){
-        if(intento[i] === codigo[i]){
-            correctos++;
-        }else if(codigo.includes(intento[i])){
-            parciales++;
-        }
-    }
+  let log = document.getElementById("log");
+  log.innerHTML += `Intento: ${intento} → ✔️ ${correctos} | 🔁 ${parciales}<br>`;
 
-    intentosRestantes--;
-    document.getElementById("intentos").innerText = intentosRestantes;
+  if(correctos === codigo.length){
+    log.innerHTML += "<b>🔥 SISTEMA HACKEADO 🔥</b><br>";
+    nivel++;
+    iniciar();
+  }
 
-    let log = document.getElementById("log");
-    log.innerHTML += `
-        Intento: ${intento} → ✔️ ${correctos} | 🔁 ${parciales} <br>
-    `;
+  if(intentosRestantes <= 0){
+    log.innerHTML += `<b>💀 SISTEMA BLOQUEADO</b> Código era: ${codigo}<br>`;
+    nivel = 1;
+    iniciar();
+  }
 
-    if(correctos === codigo.length){
-        log.innerHTML += "<b>🔥 SISTEMA HACKEADO 🔥</b><br>";
-        nivel++;
-        iniciar();
-    }
-
-    if(intentosRestantes <= 0){
-        log.innerHTML += `<b>💀 SISTEMA BLOQUEADO</b> Código era: ${codigo}<br>`;
-        nivel = 1;
-        iniciar();
-    }
-
-    document.getElementById("intento").value = "";
+  document.getElementById("intento").value = "";
 }
 
 function reiniciar(){
-    nivel = 1;
-    iniciar();
+  nivel = 1;
+  iniciar();
 }
+
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    document.getElementById("splash").style.display = "none";
+  }, 2000);
+});
 
 iniciar();
-
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js");
-}
-
 </script>
 
 </body>
-</html> 
+</html>
