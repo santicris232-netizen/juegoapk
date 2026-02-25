@@ -1,18 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#00ff99">
-    <title>juegoapk</title>
+    <title>Juego APK</title>
 </head>
-<body>
+
+<body style="background:black; color:#00ff99; text-align:center; font-family:monospace;">
+
+<h1>💻 Hackea el Sistema</h1>
+<p>Si ves esto, ya funciona.</p>
+
 <script>
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js")
     .then(() => console.log("Service Worker registrado"));
 }
 </script>
+
 </body>
 </html>
